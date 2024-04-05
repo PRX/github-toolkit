@@ -8,12 +8,14 @@ async function handleIssue(payload) {
   if (payload.action === "opened" && payload.issue.state === "open") {
     const app = new App({
       appId: 311508,
-      // GITHUB_TOKEN is actually the GitHub app private key
+      // GITHUB_APP_PRIVATE_KEY is the GitHub app private key
       // The envar should look like:
       // -----BEGIN RSA PRIVATE KEY-----\nMIIEo…
       // with the newlines replaced with "\n".
       // Those will be replaced with real newlines below.
-      privateKey: process.env.GITHUB_TOKEN.replace(/\\n/g, "\n"),
+      // When generating a private key for a GitHub app, it will download a
+      // .pem file. The contents of that file is the private key.
+      privateKey: process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n"),
     });
 
     const octokit = await app.getInstallationOctokit(payload.installation.id);

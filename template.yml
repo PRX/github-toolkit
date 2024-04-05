@@ -2,14 +2,16 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-  GitHubToken:
+  GitHubAppPrivateKey:
     Description: >-
-      A GitHub access token with permissions to update issues
+      A GitHub App's private key that has all permissions required by the toolkit
     Type: String
+    NoEcho: true
   GitHubWebhookSecret:
     Description: >-
       The secret provided by GitHub for the issues request events webhook
     Type: String
+    NoEcho: true
 
 Resources:
   OctokitLambdaLayer:
@@ -32,7 +34,7 @@ Resources:
       Environment:
         Variables:
           GITHUB_WEBHOOK_SECRET: !Ref GitHubWebhookSecret
-          GITHUB_TOKEN: !Ref GitHubToken
+          GITHUB_APP_PRIVATE_KEY: !Ref GitHubAppPrivateKey
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: BUFFERED
