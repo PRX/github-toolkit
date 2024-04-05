@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  GitHubToken:
+    Description: >-
+      A GitHub access token with permissions to update issues
+    Type: String
+  GitHubWebhookSecret:
+    Description: >-
+      The secret provided by GitHub for the issues request events webhook
+    Type: String
+
+Resources:
+  OctokitLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      ContentUri: lib/octokit
+      CompatibleRuntimes:
+        - nodejs20.x
+      Description: Octokit
+      RetentionPolicy: Delete
+
+  WebhookEndpointFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/webhook-endpoint
+      Description: >-
+        Receives GitHub webhooks for issues and performs some actions
+      Environment:
+        Variables:
+          GITHUB_WEBHOOK_SECRET: !Ref GitHubWebhookSecret
+          GITHUB_TOKEN: !Ref GitHubToken
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: BUFFERED
+      Handler: index.handler
+      Layers:
+        - !Ref OctokitLambdaLayer
+      MemorySize: 128
+      Runtime: nodejs20.x
+      Tags:
+        prx:meta:tagging-version: "2021-04-07"
+        prx:cloudformation:stack-name: !Ref AWS::StackName
+        prx:cloudformation:stack-id: !Ref AWS::StackId
+        prx:ops:environment: Production
+        prx:dev:application: GitHub Toolkit
+      Timeout: 3
+  WebhookEndpointLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${WebhookEndpointFunction}
+      RetentionInDays: 5
+      Tags:
+        - { Key: prx:meta:tagging-version, Value: "2021-04-07" }
+        - { Key: prx:cloudformation:stack-name, Value: !Ref AWS::StackName }
+        - { Key: prx:cloudformation:stack-id, Value: !Ref AWS::StackId }
+        - { Key: prx:ops:environment, Value: Production }
+        - { Key: prx:dev:application, Value: GitHub Toolkit }
+  WebhookEndpointErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub WARN [GitHub] Webhook Endpoint <prod> FUNCTION ERRORS (${AWS::StackName})
+      AlarmDescription: >-
+        The Lambda function that GitHub webhook requests for new issues hits is
+        failing, so some issues may not be processed as expected.
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref WebhookEndpointFunction
+      EvaluationPeriods: 1
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Tags:
+        - { Key: prx:meta:tagging-version, Value: "2021-04-07" }
+        - { Key: prx:cloudformation:stack-name, Value: !Ref AWS::StackName }
+        - { Key: prx:cloudformation:stack-id, Value: !Ref AWS::StackId }
+        - { Key: prx:ops:environment, Value: Production }
+        - { Key: prx:dev:application, Value: GitHub Toolkit }
+      Threshold: 1
+      TreatMissingData: notBreaching
