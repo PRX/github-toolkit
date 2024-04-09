@@ -8,11 +8,13 @@ async function handleIssue(payload) {
   if (payload.action === "opened" && payload.issue.state === "open") {
     const app = new App({
       appId: 311508,
-      // GITHUB_APP_PRIVATE_KEY is the GitHub app private key
-      // The envar should look like:
+      // If the envar is added directly to the Lambda function it will
+      // probably look like:
       // -----BEGIN RSA PRIVATE KEY-----\nMIIEo…
-      // with the newlines replaced with "\n".
+      // with the newlines replaced with literal "\n".
       // Those will be replaced with real newlines below.
+      // If the envar is added via CloudFormation or AWS SAM, it will
+      // maintain actual newlines and the `replace` will be a no-op.
       // When generating a private key for a GitHub app, it will download a
       // .pem file. The contents of that file is the private key.
       privateKey: process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n"),

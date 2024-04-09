@@ -9,8 +9,22 @@ s3_prefix = "github-toolkit"
 confirm_changeset = false
 capabilities = "CAPABILITY_IAM"
 region = "us-east-2"
+
 # Parameter overrides only need to be included when a parameter is changing
+#
+# To create or manage private keys for this app, see
+# https://github.com/organizations/PRX/settings/apps/prx-internal#private-key
+#
+# In order to be handled correctly, the multiline key blob needs to be wrapped
+# in a multiline TOML string and a pair of double quotes. Follow the example
+# below.
+#
 # parameter_overrides = [
-#   "GitHubAppPrivateKey=",
-#   "GitHubWebhookSecret="
+# """GitHubAppPrivateKey="-----BEGIN RSA PRIVATE KEY-----
+# line1
+# line2
+# line3
+# -----END RSA PRIVATE KEY-----
+# """",
+# "GitHubWebhookSecret="
 # ]
