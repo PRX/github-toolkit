@@ -1,0 +1,53 @@
+name: SAM Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - template.yml
+      - package.json
+      - yarn.lock
+      - lib/**
+      - src/**
+
+concurrency:
+  group: ${{ github.workflow }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - uses: aws-actions/setup-sam@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-2
+          role-to-assume: arn:aws:iam::578003269847:role/PRX-GHA-AccessRole
+          role-session-name: Deploy github-toolkit via GitHub Actions # 64 character limit
+
+      - name: Deploy CloudFormation stack
+        working-directory: ci
+        run: |
+          sam build && sam deploy \
+            --region us-east-2 \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --stack-name github-toolkit \
+            --resolve-s3 \
+            --no-progressbar \
+            --s3-prefix github-toolkit \
+            --capabilities CAPABILITY_IAM \
+            --role-arn arn:aws:iam::578003269847:role/PRX-GHA-ServiceRoleForCloudFormation
