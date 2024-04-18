@@ -36,7 +36,7 @@ jobs:
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::578003269847:role/PRX-GHA-AccessRole
-          role-session-name: Deploy github-toolkit via GitHub Actions # 64 character limit
+          role-session-name: gha-deploy-github-toolkit
 
       - name: Deploy CloudFormation stack
         working-directory: ci
