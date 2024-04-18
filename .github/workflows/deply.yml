@@ -39,7 +39,6 @@ jobs:
           role-session-name: gha-deploy-github-toolkit
 
       - name: Deploy CloudFormation stack
-        working-directory: ci
         run: |
           sam build && sam deploy \
             --region us-east-2 \
