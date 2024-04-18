@@ -40,6 +40,7 @@ jobs:
 
       - name: Deploy CloudFormation stack
         run: |
+          rm samconfig.toml
           sam build && sam deploy \
             --region us-east-2 \
             --no-confirm-changeset \
