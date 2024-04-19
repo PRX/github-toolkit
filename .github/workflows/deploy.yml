@@ -1,4 +1,4 @@
-name: SAM Deploy
+name: Deploy application
 
 on:
   workflow_dispatch:
@@ -20,6 +20,9 @@ permissions:
   contents: read
 
 jobs:
+  check-project-std:
+    uses: ./.github/workflows/check-project-std.yml
+
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -31,8 +34,7 @@ jobs:
 
       - uses: aws-actions/setup-sam@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::578003269847:role/PRX-GHA-AccessRole
