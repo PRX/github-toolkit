@@ -22,7 +22,7 @@ jobs:
   check-project-std:
     uses: ./.github/workflows/check-project-std.yml
 
-  deploy:
+  deploy-application:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
