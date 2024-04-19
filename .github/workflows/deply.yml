@@ -42,6 +42,7 @@ jobs:
         run: |
           rm samconfig.toml
           sam build && sam deploy \
+            --debug \
             --region us-east-2 \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
