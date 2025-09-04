@@ -30,6 +30,7 @@ Resources:
   WebhookEndpointFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Architectures: [arm64]
       CodeUri: src/webhook-endpoint
       Description: >-
         Receives GitHub webhooks for issues and performs some actions

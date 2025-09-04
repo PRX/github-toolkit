@@ -3,7 +3,7 @@ import { App } from "octokit";
 
 const OK_RESPONSE = { statusCode: 200 };
 
-async function handleIssue(payload) {
+async function handleIssue (payload) {
   console.log(JSON.stringify(payload));
   if (payload.action === "opened" && payload.issue.state === "open") {
     const app = new App({
