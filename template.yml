@@ -21,9 +21,11 @@ Resources:
     Metadata:
       BuildMethod: makefile
     Properties:
-      ContentUri: lib/octokit
+      CompatibleArchitectures:
+        - arm64
       CompatibleRuntimes:
         - nodejs22.x
+      ContentUri: lib/octokit
       Description: Octokit
       RetentionPolicy: Delete
 
