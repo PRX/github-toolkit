@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/PRX/github-toolkit#readme",
   "dependencies": {
-    "octokit": "*"
+    "octokit": "^5.0.4"
   },
   "devDependencies": {
     "@biomejs/biome": "*",
