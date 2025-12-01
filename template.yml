@@ -24,7 +24,7 @@ Resources:
       CompatibleArchitectures:
         - arm64
       CompatibleRuntimes:
-        - nodejs22.x
+        - nodejs24.x
       ContentUri: lib/octokit
       Description: Octokit
       RetentionPolicy: Delete
@@ -47,7 +47,7 @@ Resources:
       Layers:
         - !Ref OctokitLambdaLayer
       MemorySize: 128
-      Runtime: nodejs22.x
+      Runtime: nodejs24.x
       Tags:
         prx:meta:tagging-version: "2021-04-07"
         prx:cloudformation:stack-name: !Ref AWS::StackName
