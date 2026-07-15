@@ -35,7 +35,8 @@ Resources:
       Architectures: [arm64]
       CodeUri: src/webhook-endpoint
       Description: >-
-        Receives GitHub webhooks for issues and performs some actions
+        Receives GitHub webhooks for issues and pull requests and performs
+        some actions
       Environment:
         Variables:
           GITHUB_WEBHOOK_SECRET: !Ref GitHubWebhookSecret
